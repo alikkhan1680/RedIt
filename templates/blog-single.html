@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+44
+<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('{% static 'images/bg_1.jpg' %}');"
+         data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate pb-5 text-center">
+                <h1 class="mb-3 bread">Blog Single</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'home' %}">Home <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span class="mr-2"><a href="{% url 'blog' %}">Blog <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span>Blog Single <i
+                        class="ion-ios-arrow-forward"></i></span></p>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section ftco-degree-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 ftco-animate">
+                <p class="mb-5">
+                    <img src="{{ blog.image.url }}" alt class="img-fluid">
+                </p>
+                <h2 class="mb-3">{{ blog.title }}</h2>
+                <p>{{ blog.content }}</p>
+
+                <div class="tag-widget post-tag-container mb-5 mt-5">
+                    <div class="tagcloud">
+                        {% for t in blog.tag.all  %}
+                        <a href="{% url 'blog' %}?search={{ t }}#" class="tag-cloud-link">{{ t }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="about-author d-flex p-4 bg-light">
+                    <div class="bio mr-5">
+                        <img src="{{ blog.user.avatar.url }}" alt="Image placeholder" class="img-fluid mb-4" style="height: 243.31px; width: 203.41px;">
+                    </div>
+                    <div class="desc">
+                        <h3>{{ blog.user.username }}</h3>
+                        <p>{{ blog.user.bio }}</p>
+                    </div>
+                </div>
+                <div class="pt-5 mt-5">
+                    <h3 class="mb-5">{{ blog.message_set.count }} Comments</h3>
+                    <ul class="comment-list">
+                        <li class="comment">
+
+                             {% for i in message %}
+                                 {% if i.is_parent %}
+                            <div class="vcard bio">
+                                <img src="{{ i.user.avatar.url }}" alt="Image placeholder">
+                            </div>
+                            <div class="comment-body">
+                                <h3>{{ i.user.username }}</h3>
+                                <div class="meta mb-3">{{ i.created|date:'F d Y' }} at {{ i.created|date:'h : m'}}</div>
+                                <p>{{ i.message }}</p>
+                                <form action="" method="POST" id="main_form" class="comment_form">
+                                    <div>
+                                        <input class="form-control" style="width: 55%" type="text" name="message"> <input
+                                            type="hidden" value="{{ i.pk }}" name="parent"> {% csrf_token %}</div>
+                                </form>
+                            </div>
+                                 {% endif %}
+                            {% for j in i.children %}
+                            <ul class="children">
+                                <li class="comment">
+                                    <div class="vcard bio">
+                                        <img src="{{ j.user.avatar.url }}" alt="Image placeholder">
+                                    </div>
+                                    <div class="comment-body">
+                                        <p>{{ j.user.username }} <b>to</b> {{ i.user.username }} <b>message</b> {{ i.message }}</p>
+                                        <div class="meta mb-3">{{ i.created|date:'F d Y' }} at {{ i.created|date:'h : m'}}</div>
+                                        <p>{{ j.message }}</p>
+                                        <form action="" method="POST" id="main_form" class="comment_form">
+                                            <div>
+                                                <input class="form-control" style="width: 55%" type="text" name="message">
+                                                <input type="hidden" value="{{ j.id }}" name="parent"> {% csrf_token %}
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </li>
+                            </ul>
+
+                            {% endfor %}
+                            {% endfor %}
+
+                        </li>
+                    </ul>
+
+                    <div class="comment-form-wrap pt-5">
+                        <h3 class="mb-5">Leave a comment</h3>
+                        <form action="#" method="post" class="p-5 bg-light">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                               {{ form.message }}
+                            </div>
+
+                            <div class="form-group">
+                                <input type="submit" value="Post Comment" class="btn py-3 px-4 btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 sidebar pl-lg-5 ftco-animate">
+
+
+                <div class="sidebar-box ftco-animate">
+                    <div class="categories">
+                        <h3>Categories</h3>
+
+                        {% for c in cat %}
+                        <li><a href="{% url 'blog' %}?search={{ c }}#">{{ c }}<span class="ion-ios-arrow-forward"></span></a></li>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3>Recent Blog</h3>
+                    {% for bl in resblog %}
+                    <div class="block-21 mb-4 d-flex">
+                        <a class="blog-img mr-4" style="background-image: url({{ bl.image.url }});"></a>
+                        <div class="text">
+                            <h3 class="heading"><a href="{{ bl.get_absolute_url }}">{{ bl.title }}</a></h3>
+                            <div class="meta">
+                                <div><a href="{{ bl.get_absolute_url }}"><span class="icon-calendar"></span>{{ bl.created|date:'M. d, Y' }}</a></div>
+                                <div><a href="{{ bl.get_absolute_url }}"><span class="icon-person"></span>{{ bl.user }}</a></div>
+                                <div><a href="{{ bl.get_absolute_url }}"><span class="icon-chat"></span>{{ bl.message_set.count }}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                   {% endfor %}
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3>Tag Cloud</h3>
+                    <div class="tagcloud">
+
+                        {% for tg in tag %}
+                        <a href="{% url 'blog' %}?search={{ tg }}#" class="tag-cloud-link">{{ tg }}</a>
+                       {% endfor %}
+
+                    </div>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3>Paragraph</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem necessitatibus
+                        voluptate quod mollitia delectus aut, sunt placeat nam vero culpa sapiente consectetur
+                        similique, inventore eos fugit cupiditate numquam!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

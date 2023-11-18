@@ -1,0 +1,34 @@
+.vcard {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.vcard img {
+    margin-right: 10px; /* Adjust margin as needed */
+     height: 50px;
+     width: 50px;
+    border-radius: 50%;
+}
+
+.vcard p {
+    margin: 0; /* Remove default margin */
+}
+
+.nav-item a {
+    margin-left: auto; /* Align the link to the right */
+    margin-right: 10px;
+
+}
+
+
+.form-group {
+  display: flex;
+  align-items: center;
+}
+
+.formi {
+  margin-left: 1px;
+}
+
+
